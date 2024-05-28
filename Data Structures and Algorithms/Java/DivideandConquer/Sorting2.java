@@ -138,6 +138,10 @@ public class Sorting2 {
         // WRITE YOUR CODE HERE (DO NOT MODIFY METHOD HEADER)!
         // Create buckets for possible digits
         List<LinkedList<Integer>> digitBuckets = new ArrayList<>(19);
+        for (int i = 0; i < 19; i++) {
+            digitBuckets.add(new LinkedList<>());
+        }
+
 
         // Find max magnitude value
         int maxPositive = 0;
@@ -152,9 +156,9 @@ public class Sorting2 {
             }
         }
 
-        long absMinNegative = Math.abs(minNegative);
-        long absMaxPositive = Math.abs(maxPositive);
-        int maxVal = 0;
+        long absMinNegative = (long) Math.abs((long) minNegative);
+        long absMaxPositive = (long) Math.abs((long) maxPositive);
+        long maxVal = 0;
         if (absMinNegative >= absMaxPositive) {
             maxVal = minNegative;
         }
@@ -164,7 +168,7 @@ public class Sorting2 {
 
         // Find number of digits in max number
         int numDigits = 0;
-        int tempMaxVal = maxVal;
+        long tempMaxVal = maxVal;
         if (maxVal == 0) {
             numDigits = 1;
         }
@@ -174,10 +178,37 @@ public class Sorting2 {
         }
 
         // LSD Radix Loops
-        for (int currDigit = 0; currDigit <= numDigits; currDigit++) {
+        int currDigitDivisor = 10;
+        for (int currDigit = 1; currDigit <= numDigits; currDigit++) {
             // Fill buckets
             for (int i = 0; i < arr.length; i++) {
-                currNum = 
+                // Find bucket
+                int bucket;
+                if (currDigit == 1) {
+                    bucket = arr[i] % 10;
+                }
+                else {
+                    bucket = (arr[i] / currDigitDivisor) % 10;
+                }
+                // Add to bucket
+                bucket = bucket + 9;
+                LinkedList<Integer> digitBucket = digitBuckets.get(bucket);
+                digitBucket.add(arr[i]);
+            }
+
+            // Remove from buckets
+            int currIdx = 0;
+            for (int i = 0; i < 19; i++) {
+                LinkedList<Integer> digitBucket = digitBuckets.get(i);
+                while (!digitBucket.isEmpty()) {
+                    arr[currIdx] = digitBucket.removeFirst();
+                    currIdx += 1;
+                }
+            }
+
+            // Increase digit selection
+            if (currDigit > 1) {
+                currDigitDivisor *= 10;
             }
         }
     }
